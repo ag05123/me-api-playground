@@ -3,24 +3,51 @@ const sequelize = require('../db');
 const { QueryTypes } = require('sequelize');
 
 
-function safeParse(json, fallback) {
-  try {
-    return json ? JSON.parse(json) : fallback;
-  } catch (err) {
-    console.error(`Error parsing JSON: ${err.message}`);
-    return fallback;
-  }
-}
-
 function parseProfile(profile) {
   return {
     ...profile,
-    skills: safeParse(profile.skills, []),
-    projects: safeParse(profile.projects, []),
-    links: safeParse(profile.links, {})
+    skills: profile.skills || [],
+    projects: profile.projects || [],
+    links: profile.links || {}
   };
 }
 
+
+module.exports.getAllProfiles = async (req, res) => {
+  try {
+ 
+    const page = parseInt(req.query.page) || 1;
+    const limit = 1; 
+    const offset = (page - 1) * limit;
+
+   
+    const countResult = await sequelize.query(
+      `SELECT COUNT(*) AS total FROM profiles`,
+      { type: QueryTypes.SELECT }
+    );
+    const total = countResult[0].total;
+    const totalPages = Math.ceil(total / limit);
+
+  
+    const profiles = await sequelize.query(
+      `SELECT * FROM profiles ORDER BY id ASC LIMIT :limit OFFSET :offset`,
+      {
+        replacements: { limit, offset },
+        type: QueryTypes.SELECT
+      }
+    );
+    
+    res.json({
+      page,
+      totalPages,
+      totalProfiles: total,
+      data: profiles.map(parseProfile),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
 
 
 module.exports.createProfile = async (req, res) => {
@@ -48,41 +75,7 @@ module.exports.createProfile = async (req, res) => {
 };
 
 
-module.exports.getAllProfiles = async (req, res) => {
-  try {
- 
-    const page = parseInt(req.query.page) || 1;
-    const limit = 1; 
-    const offset = (page - 1) * limit;
 
-   
-    const countResult = await sequelize.query(
-      `SELECT COUNT(*) AS total FROM profiles`,
-      { type: QueryTypes.SELECT }
-    );
-    const total = countResult[0].total;
-    const totalPages = Math.ceil(total / limit);
-
-  
-    const profiles = await sequelize.query(
-      `SELECT * FROM profiles ORDER BY id ASC LIMIT :limit OFFSET :offset`,
-      {
-        replacements: { limit, offset },
-        type: QueryTypes.SELECT
-      }
-    );
-  console.log(profiles.map(parseProfile));
-    res.json({
-      page,
-      totalPages,
-      totalProfiles: total,
-      data: profiles.map(parseProfile),
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-};
 
 
 module.exports.getProfileById = async (req, res) => {
