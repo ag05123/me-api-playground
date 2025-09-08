@@ -6,7 +6,7 @@ const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize(
   'railway',                // database name
   'root',                   // username
-  'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', // password
+  'tTQwfCGVVOHrUWnaJqWTDShcHwmQMHXJ', // password
   {
     host: 'mysql.railway.internal', // correct host
     port: 3306, // confirm this is the public port
