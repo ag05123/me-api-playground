@@ -1,9 +1,17 @@
 # Profile API Manager
 
-A simple Node.js + Express + MySQL (Sequelize) backend with a frontend HTML/JS client for managing user profiles.  
-Includes **pagination**, **search**, **rate limiting**, and **health check**.
+A Node.js + Express + Sequelize project for managing developer profiles
+with MySQL (JSON fields).
 
----
+------------------------------------------------------------------------
+
+##  Resume
+
+You can view my resume here: [My
+Resume](https://drive.google.com/file/d/1UHLPfYOyQpG_dUkfLxAIDGaJeocyykne/view?usp=drive_link)
+
+------------------------------------------------------------------------
+
 
 ##  Features
 - **CRUD APIs** for managing profiles.
@@ -94,3 +102,131 @@ A simple `index.html` file (in `/public`) provides:
 - Right-side panel to display JSON response.
 - Modal form to **create/edit profiles** with all fields.
 
+
+
+
+##  Test Cases
+
+### 1. Create Profile
+
+**Request**
+
+``` http
+POST /api/profile
+Content-Type: application/json
+
+{
+  "name": "Ankit Gupta",
+  "email": "ankit@example.com",
+  "education": "MCA",
+  "skills": ["Node.js", "Express", "MySQL"],
+  "projects": [
+    {
+      "title": "Wow-tour",
+      "description": "A travel booking app with JWT auth & CRUD APIs",
+      "skills": ["Node.js", "Express", "MongoDB"],
+      "link": "https://github.com/johndoe/wow-tour"
+    }
+  ],
+  "links": { "github": "https://github.com/ankit" }
+}
+```
+
+**Expected Response**
+
+``` json
+{ "insertedId": 1 }
+```
+
+------------------------------------------------------------------------
+
+### 2. Get All Profiles
+
+**Request**
+
+``` http
+GET /api/profile?page=1&limit=2
+```
+
+**Expected Response**
+
+``` json
+{
+  "page": 1,
+  "totalPages": 1,
+  "totalProfiles": 1,
+  "data": [
+    {
+      "id": 1,
+      "name": "Ankit Gupta",
+      "email": "ankit@example.com",
+      "education": "MCA",
+      "skills": ["Node.js", "Express", "MySQL"],
+      "projects": [ ... ],
+      "links": { "github": "https://github.com/ankit" }
+    }
+  ]
+}
+```
+
+------------------------------------------------------------------------
+
+### 3. Search by Skill
+
+**Request**
+
+``` http
+GET /api/projects?skill=node.js
+```
+
+**Expected Response**
+
+``` json
+[
+  {
+    "profileId": 1,
+    "project": {
+      "title": "Wow-tour",
+      "description": "A travel booking app with JWT auth & CRUD APIs",
+      "skills": ["Node.js", "Express", "MongoDB"],
+      "link": "https://github.com/johndoe/wow-tour"
+    }
+  }
+]
+```
+
+------------------------------------------------------------------------
+
+### 4. Delete Profile
+
+**Request**
+
+``` http
+DELETE /api/profile/1
+```
+
+**Expected Response**
+
+``` json
+{ "deleted": 1 }
+```
+
+------------------------------------------------------------------------
+
+##  Health Check
+
+**Request**
+
+``` http
+GET /health
+```
+
+**Expected Response**
+
+``` json
+{
+  "status": "ok",
+  "database": "connected",
+  "timestamp": "2025-09-08T19:47:29.475Z"
+}
+```
