@@ -67,7 +67,7 @@ module.exports.getAllProfiles = async (req, res) => {
         type: QueryTypes.SELECT
       }
     );
-
+  console.log(profiles.map(parseProfile)):
     res.json({
       page,
       totalPages,
