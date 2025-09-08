@@ -3,20 +3,24 @@ const sequelize = require('../db');
 const { QueryTypes } = require('sequelize');
 
 
-function parseProfile(profile) {
-  if (!profile) return null;
+function safeParse(json, fallback) {
   try {
-    profile.skills = JSON.parse(profile.skills || '[]');
-    profile.projects = JSON.parse(profile.projects || '[]');
-    profile.links = JSON.parse(profile.links || '{}');
-  } catch (e) {
-    console.error(`Error parsing JSON for profile ID ${profile.id}`, e);
-    profile.skills = []; 
-    profile.projects = [];
-    profile.links = {};
+    return json ? JSON.parse(json) : fallback;
+  } catch (err) {
+    console.error(`Error parsing JSON: ${err.message}`);
+    return fallback;
   }
-  return profile;
 }
+
+function parseProfile(profile) {
+  return {
+    ...profile,
+    skills: safeParse(profile.skills, []),
+    projects: safeParse(profile.projects, []),
+    links: safeParse(profile.links, {})
+  };
+}
+
 
 
 module.exports.createProfile = async (req, res) => {
