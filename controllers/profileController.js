@@ -145,36 +145,33 @@ module.exports.deleteProfile = async (req, res) => {
 
 
 
+// 🚀 Recommended efficient version
 module.exports.projectsBySkill = async (req, res) => {
   const skill = (req.query.skill || '').toLowerCase();
+
+  if (!skill) {
+    return res.status(400).json({ error: "A 'skill' query parameter is required." });
+  }
+
   try {
+    // This SQL query tells the database to only find rows where the
+    // 'skills' JSON array contains the skill we're looking for.
     const profiles = await sequelize.query(
-      `SELECT id, projects FROM profiles`,
-      { type: QueryTypes.SELECT }
+      `SELECT * FROM profiles WHERE JSON_CONTAINS(LOWER(skills), CAST(CONCAT('"', ?, '"') AS JSON), '$')`,
+      {
+        replacements: [skill],
+        type: QueryTypes.SELECT
+      }
     );
 
-    const result = [];
-
-    for (const profile of profiles) {
-      const projects = profile.projects || []; // already an array
-      
-      for (const p of projects) {
-        const skills = (p.skills || []).map(s => String(s).toLowerCase());
-        const text = ((p.title || '') + ' ' + (p.description || '')).toLowerCase();
-
-        if (!skill || skills.includes(skill) || text.includes(skill)) {
-          result.push({ profileId: profile.id, project: p });
-        }
-      }
-    }
-
-    res.json(result);
+    // The database has already done the filtering, so we just parse and return the results.
+    res.json(profiles.map(parseProfile));
+    
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.error("ERROR in projectsBySkill:", err);
+    res.status(500).json({ error: "Database query failed", details: err.message });
   }
 };
-
 // GET /api/search?q=...
 module.exports.searchProfiles = async (req, res) => {
   const q = (req.query.q || '').toLowerCase();
