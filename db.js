@@ -2,10 +2,22 @@
 const { Sequelize } = require('sequelize');
 
 
-const sequelize = new Sequelize('railway', 'root', 'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', {
-  host: 'trolley.proxy.rlwy.net',
-  dialect: 'mysql'
-});
+
+const sequelize = new Sequelize(
+  'railway',                // database name
+  'root',                   // username
+  'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', // password
+  {
+    host: 'containers-us-west-XX.railway.app', // correct host
+    port: 18971, // confirm this is the public port
+    dialect: "mysql",
+    dialectOptions: {
+      connectTimeout: 10000 // 10 seconds
+    },
+    logging: false,
+  }
+);
+
 
 
 async function testConnection() {
