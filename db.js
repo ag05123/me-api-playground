@@ -8,8 +8,8 @@ const sequelize = new Sequelize(
   'root',                   // username
   'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', // password
   {
-    host: 'containers-us-west-XX.railway.app', // correct host
-    port: 18971, // confirm this is the public port
+    host: 'mysql.railway.internal', // correct host
+    port: 3306, // confirm this is the public port
     dialect: "mysql",
     dialectOptions: {
       connectTimeout: 10000 // 10 seconds
