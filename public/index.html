@@ -173,18 +173,39 @@
     }
 
     function openModal(mode, data = {}, id = null) {
-      editMode = (mode === 'edit');
-      editingId = id;
-      document.getElementById("modalTitle").textContent = editMode ? "Edit Profile" : "Create Profile";
-      document.getElementById("modalName").value = data.name || "";
-      document.getElementById("modalEmail").value = data.email || "";
-      document.getElementById("modalEducation").value = data.education || "";
-      document.getElementById("modalSkills").value = (data.skills || []).join(", ");
-      document.getElementById("modalProjects").value = JSON.stringify(data.projects || [], null, 2);
-      document.getElementById("modalWork").value = JSON.stringify(data.work || [], null, 2);
-      document.getElementById("modalLinks").value = JSON.stringify(data.links || {}, null, 2);
-      modal.style.display = "flex";
-    }
+  editMode = (mode === 'edit');
+  editingId = id;
+  document.getElementById("modalTitle").textContent = editMode ? "Edit Profile" : "Create Profile";
+
+  if (editMode) {
+    // --- EDIT MODE: Populate the form with existing data ---
+    document.getElementById("modalName").value = data.name || "";
+    document.getElementById("modalEmail").value = data.email || "";
+    document.getElementById("modalEducation").value = data.education || "";
+    document.getElementById("modalSkills").value = (data.skills || []).join(", ");
+
+    // Use the improved logic to show empty strings for empty arrays/objects
+    const projects = data.projects || [];
+    const work = data.work || [];
+    const links = data.links || {};
+
+    document.getElementById("modalProjects").value = projects.length > 0 ? JSON.stringify(projects, null, 2) : "";
+    document.getElementById("modalWork").value = work.length > 0 ? JSON.stringify(work, null, 2) : "";
+    document.getElementById("modalLinks").value = Object.keys(links).length > 0 ? JSON.stringify(links, null, 2) : "";
+
+  } else {
+    // --- CREATE MODE: Clear all fields to show placeholders ---
+    document.getElementById("modalName").value = "";
+    document.getElementById("modalEmail").value = "";
+    document.getElementById("modalEducation").value = "";
+    document.getElementById("modalSkills").value = "";
+    document.getElementById("modalProjects").value = "";
+    document.getElementById("modalWork").value = "";
+    document.getElementById("modalLinks").value = "";
+  }
+
+  modal.style.display = "flex";
+}
 
     function closeModal() {
       modal.style.display = "none";
