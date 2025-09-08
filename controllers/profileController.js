@@ -144,6 +144,7 @@ module.exports.deleteProfile = async (req, res) => {
 };
 
 
+
 module.exports.projectsBySkill = async (req, res) => {
   const skill = (req.query.skill || '').toLowerCase();
   try {
@@ -151,17 +152,22 @@ module.exports.projectsBySkill = async (req, res) => {
       `SELECT id, projects FROM profiles`,
       { type: QueryTypes.SELECT }
     );
+
     const result = [];
+
     for (const profile of profiles) {
-      const projects = JSON.parse(profile.projects || '[]');
+      const projects = profile.projects || []; // already an array
+      
       for (const p of projects) {
         const skills = (p.skills || []).map(s => String(s).toLowerCase());
-        const text = (p.title || '') + ' ' + (p.description || '');
-        if (!skill || skills.includes(skill) || (skill && text.toLowerCase().includes(skill))) {
+        const text = ((p.title || '') + ' ' + (p.description || '')).toLowerCase();
+
+        if (!skill || skills.includes(skill) || text.includes(skill)) {
           result.push({ profileId: profile.id, project: p });
         }
       }
     }
+
     res.json(result);
   } catch (err) {
     console.error(err);
