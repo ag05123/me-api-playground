@@ -8,7 +8,7 @@ with MySQL (JSON fields).
 ##  Resume
 
 You can view my resume here: [My
-Resume](https://drive.google.com/file/d/1UHLPfYOyQpG_dUkfLxAIDGaJeocyykne/view?usp=drive_link)
+Resume](https://drive.google.com/file/d/1UHLPfYOyQpG_dUkfLxAIDGaJeocyykne/view?usp=drive_link](https://drive.google.com/file/d/1UHLPfYOyQpG_dUkfLxAIDGaJeocyykne/view?usp=sharing))
 
 ------------------------------------------------------------------------
 
