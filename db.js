@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 
 const sequelize = new Sequelize('railway', 'root', 'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', {
-  host: 'mysql.railway.internal',
+  host: 'mysql://root:FQfjSrKtRhZPZkidgwMMMavAVObKPKGw@trolley.proxy.rlwy.net:18971/railway',
   dialect: 'mysql'
 });
 
