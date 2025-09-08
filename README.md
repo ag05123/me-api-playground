@@ -40,15 +40,7 @@ cd ME-API-PLAYGROUND
 npm install
 ```
 
-Create a `.env` file:
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=password
-DB_NAME=profiles_db
-DB_DIALECT=mysql
-PORT=3000
-```
+
 
 
 
