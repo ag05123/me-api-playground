@@ -154,8 +154,7 @@ module.exports.projectsBySkill = async (req, res) => {
   }
 
   try {
-    // This SQL query tells the database to only find rows where the
-    // 'skills' JSON array contains the skill we're looking for.
+   
     const profiles = await sequelize.query(
       `SELECT * FROM profiles WHERE JSON_CONTAINS(LOWER(skills), CAST(CONCAT('"', ?, '"') AS JSON), '$')`,
       {
@@ -164,7 +163,7 @@ module.exports.projectsBySkill = async (req, res) => {
       }
     );
 
-    // The database has already done the filtering, so we just parse and return the results.
+    
     res.json(profiles.map(parseProfile));
     
   } catch (err) {
@@ -172,15 +171,15 @@ module.exports.projectsBySkill = async (req, res) => {
     res.status(500).json({ error: "Database query failed", details: err.message });
   }
 };
-// GET /api/search?q=...
+
 module.exports.searchProfiles = async (req, res) => {
   const q = (req.query.q || '').toLowerCase();
   if (!q) {
-      return this.getAllProfiles(req, res); // If search is empty, return all
+      return this.getAllProfiles(req, res); 
   }
-  const searchTerm = `%${q}%`; // Wildcards for LIKE
+  const searchTerm = `%${q}%`; 
   try {
-    // A more efficient way to search using raw SQL
+    
     const profiles = await sequelize.query(
       `SELECT * FROM profiles WHERE 
        LOWER(name) LIKE :searchTerm OR 
@@ -200,7 +199,7 @@ module.exports.searchProfiles = async (req, res) => {
   }
 };
 
-// GET /api/skills/top
+
 module.exports.getTopSkills = async (req, res) => {
   try {
     const profiles = await sequelize.query(
@@ -231,7 +230,26 @@ module.exports.getTopSkills = async (req, res) => {
   }
 };
 
-// GET /health
-module.exports.healthCheck = (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date() });
+module.exports.healthCheck = async (req, res) => {
+  try {
+   
+    await sequelize.authenticate();
+    
+    
+    res.status(200).json({ 
+      status: 'ok', 
+      database: 'connected',
+      timestamp: new Date() 
+    });
+  } catch (error) {
+   
+    console.error('Health check failed: Unable to connect to the database.', error);
+    
+    res.status(503).json({ 
+      status: 'error',
+      database: 'disconnected',
+      details: error.message,
+      timestamp: new Date()
+    });
+  }
 };
