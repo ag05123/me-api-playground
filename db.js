@@ -2,8 +2,8 @@
 const { Sequelize } = require('sequelize');
 
 
-const sequelize = new Sequelize('me_api_playground', 'root', 'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', {
-  host: 'localhost',
+const sequelize = new Sequelize('railway', 'root', 'FQfjSrKtRhZPZkidgwMMMavAVObKPKGw', {
+  host: 'mysql.railway.internal',
   dialect: 'mysql'
 });
 
