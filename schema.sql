@@ -1,0 +1,15 @@
+-- Create database:
+CREATE DATABASE IF NOT EXISTS me_api_playground;
+USE me_api_playground;
+
+CREATE TABLE IF NOT EXISTS profiles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255),
+  education TEXT,
+  skills TEXT,
+  projects MEDIUMTEXT,
+  links TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
